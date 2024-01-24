@@ -13,6 +13,12 @@ def img_transform(uploaded_file):
     image_np = np.array(image)
 
     # Extraer características HOG
-    features_hog = hog(image_np, pixels_per_cell=(8, 8))
+    features_hog, img_hog = hog(image_np, pixels_per_cell=(8, 8), visualize = True)
 
-    return features_hog
+    # Normalizar 'img_hog' para que esté en el rango [0, 255] si es necesario
+    if img_hog.min() < 0 or img_hog.max() > 1:
+        img_hog = (img_hog - img_hog.min()) / (img_hog.max() - img_hog.min())  # Normalizar a [0, 1]
+        img_hog = (img_hog * 255).astype(np.uint8)  # Escalar a [0, 255] y convertir a enteros
+
+    
+    return features_hog, image, img_hog
